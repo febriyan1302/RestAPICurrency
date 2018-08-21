@@ -1,6 +1,24 @@
 version: '3'
 
 services:
-	web:
-		build: .
-		command: 
+  mysql:
+    image: mysql:8.0.2
+    environment:
+      MYSQL_ROOT_PASSWORD: febriano
+      MYSQL_DATABASE: currency
+    ports:
+      - 127.0.0.1:3306:3306
+    networks:
+      - default
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python api/manage.py runserver 0.0.0.0:8087
+    volumes:
+      - .:/code
+    ports:
+      - 8087:8087
+    depends_on:
+      - mysql
